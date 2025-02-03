@@ -9,10 +9,15 @@ class Environment:
         self.epoch_length = epoch_length
 
     def reproduce(self):
+        relationship_graph = {}
         for agent in self.agents:
-            partner = agent.choose_partner([a for a in self.agents if a != agent])
-            if partner and self.cur_population < self.max_population:
-                self.agents.append(Agent(agent, partner))
+            relationship_graph[agent.get_id()] = agent.choose_partner([a for a in self.agents if a != agent])
+        # do a bfs here
+
+
+
+        # if partner and self.cur_population < self.max_population:
+        #     self.agents.append(Agent(agent, partner))
     
     def pass_time(self):
         self.time += 1
