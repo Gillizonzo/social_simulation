@@ -1,18 +1,17 @@
-from Gene import Gene
+import Gene
 import numpy as np
 import random
 
-np.random.seed(42)
 random.seed(42)
-gene_pool = [Gene(lifespan=val) for val in np.random.randint(1, 100, size=20)]
 
 class Agent:
     id = 0
     def __init__(self, parent_a=None, parent_b=None):
         if not parent_a or not parent_b:
-            self.genes = (random.choice(gene_pool), random.choice(gene_pool))
+            self.genes = (random.choice(Gene.gene_pool), random.choice(Gene.gene_pool))
         else:
             self.genes = (parent_a.get_reproductive_gene(), parent_b.get_reproductive_gene())
+        self.genes[0].express(), self.genes[0].express()
         self.desirability = int(np.clip(np.mean([self.genes[0].get_desirability(), self.genes[1].get_desirability()]) + random.randint(-40, 40),
                                     0, 100))
         self.partner_pickiness = random.randint(0, 10)
@@ -39,6 +38,7 @@ class Agent:
 
     def kill(self):
         self.is_alive = False
+        self.genes[0].drop_from_gene_pool(), self.genes[0].drop_from_gene_pool()
 
     def get_expressed_desirability(self):
         return self.desirability
@@ -77,4 +77,5 @@ class Agent:
         self.age += 1
         if self.age > self.expressed_lifespan:
             self.is_alive = False
+            self.genes[0].drop_from_gene_pool(), self.genes[0].drop_from_gene_pool()
         

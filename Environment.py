@@ -1,9 +1,12 @@
 from Agent import Agent
+import Gene
 import random
 import pandas as pd
 
-random.seed(42)
-pre_df_data = []
+seed = 42
+random.seed(seed)
+pre_df_pop_data = []
+pre_df_gene_data = []
 class Environment:
     def __init__(self, max_population, agents, epoch_length):
         self.max_population = max_population
@@ -62,7 +65,8 @@ class Environment:
             for agent in self.agents:
                 agent.activate_reproductive_cooldown(False)
             self.get_statistics()
-        pd.DataFrame(pre_df_data).to_csv('simulation_results.csv')
+        pd.DataFrame(pre_df_pop_data).to_csv(f'simulation_pop_results_{seed}.csv')
+        pd.DataFrame(pre_df_gene_data).to_csv(f'simulation_gene_results_{seed}.csv')
         
     def get_statistics(self):
         average_lifespan = 0
@@ -75,11 +79,16 @@ class Environment:
         average_lifespan /= self.cur_population + 10e-7
         average_desirability /= self.cur_population + 10e-7
         print(f'Time: {self.time} | Current Population: {self.cur_population} | Births: {self.births} | Deaths: {self.deaths} | Average Lifespan: {average_lifespan} | Average Desirability: {average_desirability}')
-        data = {'Time': self.time,
+        gene_distribution = []
+        for gene in Gene.gene_pool:
+            gene_distribution.append((gene.get_gene_name(), gene.get_expressions()))
+        pop_data = {'Time': self.time,
                 'Current Population' : self.cur_population,
                 'Births' : self.births,
                 'Deaths' : self.deaths,
                 'Average Lifespan' : average_lifespan,
                 'Average Desirability' : average_desirability}
-        pre_df_data.append(data)
+        gene_dist_data = {'Time': self.time} | {f'Gene {gene_name}' : num_expressions for gene_name, num_expressions in gene_distribution}
+        pre_df_pop_data.append(pop_data)
+        pre_df_gene_data.append(gene_dist_data)
     
